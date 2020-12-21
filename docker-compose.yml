@@ -5,5 +5,7 @@ services:
     ports:
       - "80:80"
       - "3000:3000"
+    env_file:
+      - ./app.env
     volumes:
       - ./src:/home/src
