@@ -1,13 +1,19 @@
-FROM node:alpine
+FROM ubuntu:18.04
 
+# Install packages
+RUN apt-get update
+RUN apt-get install -y python3-pip postgresql-client
+
+# Create WD
 RUN mkdir -p /home/backend
 WORKDIR /home/backend
 
-COPY package-lock.json /home/backend
-
-RUN npm config set registry http://registry.npmjs.org/
-RUN npm install
+# Install PIP dependencies
+COPY requirements.txt /home/backend
+RUN pip3 install -r requirements.txt
 
 COPY . /home/backend
 
-CMD ["node", "app.js"]
+EXPOSE 5000
+
+CMD ["python3", "app.py"]
