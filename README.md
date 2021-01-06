@@ -1,4 +1,4 @@
-# Environ
+# Threetography
 
 A simple way of instantiating new projects. Simply launch and interact with the services by running `docker-compose up`.
 

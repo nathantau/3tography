@@ -14,21 +14,23 @@ services:
   #     - backend
   backend:
     build: ./src/backend
-    # expose:
-    #   - 5000
+    expose:
+      - 5000
     ports:
       - 5000:5000
     env_file:
       - ./app.env
     volumes:
       - ./src/backend:/home/backend
+    links:
+      - db
   db:
     image: postgres:11
     expose:
       - 5432
-    ports:
-      - 5432:5432
     environment:
-      POSTGRES_USER: nathan
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: nathan
     restart: always
+    volumes:
+      - ./src/db:/var/lib/postgresql/data
