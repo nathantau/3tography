@@ -1,5 +1,11 @@
 from .pg import query
 
+def register(username):
+    pass
+
+
+
+
 def user_exists(username):
     query_str = '''
         SELECT COUNT(*) FROM users WHERE username = '{}'
@@ -7,11 +13,8 @@ def user_exists(username):
     out, err = query(query_str)
     return out[0][0] == '1'
 
-def insert_user(username, password):
+def register(username, password):
     # Check if user exists
-    query_str = '''
-        SELECT * FROM users WHERE username = {}
-    '''.format(username)
     if user_exists:
         return None, 'User already exists'
     # Add user
@@ -60,7 +63,10 @@ def create_users_table():
             username text PRIMARY KEY,
             password text,
             followers text[],
-            following text[]
+            following text[],
+            one text,
+            two text,
+            three text
         );
     '''
     out, err = query(query_str)

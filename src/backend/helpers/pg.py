@@ -25,5 +25,5 @@ def parse_output(out):
     '''
     out = out.decode('utf-8')
     rows = [row.split('|') for row in out.split('\n')]
-    return rows
+    return set(rows)
 

@@ -22,6 +22,7 @@ services:
       - ./app.env
     volumes:
       - ./src/backend:/home/backend
+      - ./src/.aws/credentials:/root/.aws/credentials
     links:
       - db
   db:
