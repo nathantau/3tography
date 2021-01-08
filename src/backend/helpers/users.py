@@ -1,10 +1,19 @@
 from .pg import query
 
-def register(username):
+def refresh_images(user):
     pass
+    '''
+    Refreshes images for all specified users that user is following
+    '''
 
-
-
+def update_image(user, pos, url):
+    query_str = f'''
+        UPDATE users
+        SET {pos} = '{url}'
+        WHERE username = '{user}'
+    '''
+    out, err = query(query_str)
+    return out, err
 
 def user_exists(username):
     query_str = '''
@@ -15,7 +24,7 @@ def user_exists(username):
 
 def register(username, password):
     # Check if user exists
-    if user_exists:
+    if user_exists(username):
         return None, 'User already exists'
     # Add user
     query_str = '''

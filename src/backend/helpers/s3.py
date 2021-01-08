@@ -25,6 +25,7 @@ def gen_presigned_url(user, pos, exp=60*120):
 
 def can_upload(user):
     '''
+    --OBSELETE--
     Determines if user can upload any more images (under assumption that user exists,
     implying that a user subdirectory in S3 exists as well).
     Returns:
@@ -44,13 +45,14 @@ def upload_img(user, filename):
     Returns:
     (succeeded, error)
     '''
-    if not can_upload(user):
-        print('[ERR] User {} exceeded total uploads'.format(user))
-        return False, 'User {} exceeded total uploads'.format(user)
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(BUCKET)
     try:
-        bucket.upload_file('/tmp/{}/{}'.format(user, filename), 'users/{}/{}'.format(user, filename))
+        bucket.upload_file('/tmp/users/{}/{}'.format(user, filename), 'users/{}/{}'.format(user, filename))
         return True, None
     except Exception as e:
         return False, 'Error uploading file to S3 for user {}: {}'.format(user, str(e))
+
+def delete_img(user, pos):
+    pass    
+
