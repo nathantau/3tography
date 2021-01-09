@@ -4,14 +4,40 @@ Wrapper module for AWS S3 functionalities.
 
 import boto3
 
-BUCKET = 'threetography'
-MAX_UPLOADS = 3
 
-def gen_presigned_url(user, pos, exp=60*120):
+BUCKET = '3tography'
+MAX_UPLOADS = 3
+credentials = None
+
+
+def assume_role():
+    '''
+    Assume the threetography role if access is expired.
+    '''
+    sts = boto3.client('sts')
+    response = sts.get_caller_identity()
+    if 'assumed-role' not in response.get('Arn'):
+        # Assume role if not already assumed
+        response = sts.assume_role(
+            RoleArn='arn:aws:iam::372123248858:role/threetography',
+            RoleSessionName='FlaskSession',
+            DurationSeconds=60*60*8
+        )
+        # Update credentials
+        global credentials
+        credentials = response.get('Credentials')
+
+
+def gen_presigned_url(user, pos, exp=60*60*24*7):
     '''
     Generates a presigned url allowing any individual to access the given link for 2 hours.
     '''
-    s3 = boto3.client('s3')
+    role_session = boto3.Session(
+        aws_access_key_id=credentials.get('AccessKeyId'),
+        aws_secret_access_key=credentials.get('SecretAccessKey'),
+        aws_session_token=credentials.get('SessionToken')
+    )
+    s3 = role_session.client('s3')
     try:
         key = f'users/{user}/{pos}'
         url = s3.generate_presigned_url('get_object', 
@@ -23,20 +49,6 @@ def gen_presigned_url(user, pos, exp=60*120):
         print('[ERR] Error generating presigned url: {}'.format(str(e)))
         return None
 
-def can_upload(user):
-    '''
-    --OBSELETE--
-    Determines if user can upload any more images (under assumption that user exists,
-    implying that a user subdirectory in S3 exists as well).
-    Returns:
-    can_upload (bool)
-    '''
-    s3 = boto3.resource('s3')
-    bucket = s3.Bucket(BUCKET)
-    # Number of uploads is equal to number of files - 1 for prefix entry
-    num_uploads = len(list(bucket.objects.filter(Prefix='users/{}/'.format(user))))
-    print('[LOG] Number of uploads for {}:'.format(user), num_uploads)
-    return num_uploads < MAX_UPLOADS
 
 def upload_img(user, filename):
     '''
@@ -52,6 +64,7 @@ def upload_img(user, filename):
         return True, None
     except Exception as e:
         return False, 'Error uploading file to S3 for user {}: {}'.format(user, str(e))
+
 
 def delete_img(user, pos):
     pass    

@@ -1,17 +1,18 @@
 version: "3"
 services:
-  # frontend:
-  #   build: ./src/frontend
-  #   expose:
-  #     - 3000
-  #   ports:
-  #     - 3000:3000
-  #   env_file:
-  #     - ./app.env
-  #   volumes:
-  #     - ./src/frontend:/home/frontend
-  #   links:
-  #     - backend
+  frontend:
+    build: ./src/frontend
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    env_file:
+      - ./app.env
+    volumes:
+      - ./src/frontend:/app
+      - /app/node_modules
+    links:
+      - backend
   backend:
     build: ./src/backend
     expose:
@@ -25,6 +26,7 @@ services:
       - ./src/.aws/credentials:/root/.aws/credentials
     links:
       - db
+    restart: always
   db:
     image: postgres:11
     expose:

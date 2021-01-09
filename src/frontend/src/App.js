@@ -1,31 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
 
+import Home from './components/Home';
+
 function App() {
 
-  const getData = () => {
-    fetch('/api')
-    .then(e => e.text())
-    .then(e => console.log(e))
-  }
+//   const getData = () => {
+//     fetch('http://localhost:5000/')
+//     .then(e => e.text())
+//     .then(e => console.log(e))
+//     .catch(e => console.log('error is ', e))
+//   }
 
   return (
     <div className="App">
-      <header className="App-header">
-        {getData()}
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Home></Home>
     </div>
   );
 }

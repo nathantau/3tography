@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from helpers import s3, auth, pg, users
 
 import json
@@ -8,7 +8,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return "hello world"
+    response = Response(json.dumps({
+        'hello': 'world'
+    }))
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    return response
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -51,6 +56,27 @@ def upload():
         'status': f'Successfully uploaded image for {user}'
     })
     
+@app.route('/me', methods=['POST', 'OPTIONS'])
+def me():
+    if request.method == 'OPTIONS':
+        response = Response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
+    # Retrieve S3 image links from DB
+    user = request.json.get('user')
+    image_urls = users.image_links(user)
+    response = Response(json.dumps({
+        'profileUrl': '',
+        'imageUrls': image_urls
+    }))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'POST'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    return response
+
+
 @app.route('/register', methods=['POST'])
 def register():
     pass

@@ -1,10 +1,22 @@
 from .pg import query
 
-def refresh_images(user):
-    pass
+
+def image_links(user):
     '''
-    Refreshes images for all specified users that user is following
+    
     '''
+    # Query for URLs
+    query_str = f'''
+        SELECT one, two, three FROM users
+        WHERE username = '{user}'
+    '''
+    out, err = query(query_str)
+    if err:
+        print(f'[ERR] Error retrieving image URLs from DB: {str(err)}')
+        return []
+    # Parse data for URLs
+    return out[0]
+
 
 def update_image(user, pos, url):
     query_str = f'''
@@ -15,12 +27,14 @@ def update_image(user, pos, url):
     out, err = query(query_str)
     return out, err
 
+
 def user_exists(username):
     query_str = '''
         SELECT COUNT(*) FROM users WHERE username = '{}'
     '''.format(username)
     out, err = query(query_str)
     return out[0][0] == '1'
+
 
 def register(username, password):
     # Check if user exists
@@ -33,6 +47,7 @@ def register(username, password):
     '''.format(username, password)
     out, err = query(query_str)
     return out, err    
+
 
 def follow(user1, user2):
     '''
@@ -58,12 +73,14 @@ def follow(user1, user2):
     out, err = query(query_str)
     return out, err
 
+
 def list_users():
     query_str = '''
         SELECT * FROM users
     '''
     out, err = query(query_str)
     return out, err    
+
 
 def create_users_table():
     query_str = '''
