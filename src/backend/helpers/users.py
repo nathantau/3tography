@@ -92,7 +92,9 @@ def create_users_table():
             following text[],
             one text,
             two text,
-            three text
+            three text,
+            profile_pic url,
+            description text
         );
     '''
     out, err = query(query_str)

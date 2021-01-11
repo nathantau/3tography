@@ -1,0 +1,23 @@
+/* .row img {
+    max-width: 100%;
+} */
+
+.row img:hover {
+    cursor: pointer;
+}
+
+.heading {
+    text-align: left;
+    margin: 5vh 0 5vh;
+}
+
+.profile-wrapper {
+    width: 75px;
+    height: 75px;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-wrapper img {
+    width: 100%;
+}

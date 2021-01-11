@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@1,700&display=swap');
+
+.home-banner {
+    background-color: black;
+    color: white;
+    padding: 1vh;
+    font-family: 'Lobster Two', cursive;
+}

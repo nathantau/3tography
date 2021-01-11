@@ -7,7 +7,7 @@ import boto3
 
 BUCKET = '3tography'
 MAX_UPLOADS = 3
-credentials = None
+credentials = {}
 
 
 def assume_role():
@@ -32,6 +32,7 @@ def gen_presigned_url(user, pos, exp=60*60*24*7):
     '''
     Generates a presigned url allowing any individual to access the given link for 2 hours.
     '''
+    assume_role()
     role_session = boto3.Session(
         aws_access_key_id=credentials.get('AccessKeyId'),
         aws_secret_access_key=credentials.get('SecretAccessKey'),
@@ -39,7 +40,7 @@ def gen_presigned_url(user, pos, exp=60*60*24*7):
     )
     s3 = role_session.client('s3')
     try:
-        key = f'users/{user}/{pos}'
+        key = f'users/{user}/{pos}.png'
         url = s3.generate_presigned_url('get_object', 
             Params={'Bucket': BUCKET, 'Key': key},
             ExpiresIn=exp
@@ -52,12 +53,17 @@ def gen_presigned_url(user, pos, exp=60*60*24*7):
 
 def upload_img(user, filename):
     '''
-    Checks to see if there are less than 3 images in
-    the S3 Bucket subdirectory and if so, uploads the image.
+    Uploads a given image for a specified user in S3.
     Returns:
     (succeeded, error)
     '''
-    s3 = boto3.resource('s3')
+    assume_role()
+    role_session = boto3.Session(
+        aws_access_key_id=credentials.get('AccessKeyId'),
+        aws_secret_access_key=credentials.get('SecretAccessKey'),
+        aws_session_token=credentials.get('SessionToken')
+    )
+    s3 = role_session.resource('s3')
     bucket = s3.Bucket(BUCKET)
     try:
         bucket.upload_file('/tmp/users/{}/{}'.format(user, filename), 'users/{}/{}'.format(user, filename))
