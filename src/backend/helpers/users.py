@@ -45,6 +45,13 @@ def get_user(username):
     }
 
 
+def get_following(username):
+    user = get_user(username)
+    if not user:
+        return []
+    return user['following']
+
+
 def image_links(username):
     user = get_user(username)
     if not user:

@@ -29,8 +29,30 @@ const Auth = {
             Auth.logout();
         }
     },
+    register: async (username, password) => {
+        /**
+         * Returns 'true' if successfully registered, 'false' otherwise
+         */
+        try {
+            let res = await fetch(`${host}/register`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user: username,
+                    password: password
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            res = await res.json();
+            return res.registered;
+        } catch (err) {
+            console.error(err);
+        }
+        return false; 
+    },
     logout: () => {
-        localStorage.clear();
+        localStorage.removeItem('3tography-access-token');
     },
     isLoggedIn: async () => {
         try {

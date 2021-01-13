@@ -46,5 +46,10 @@ def authenticated():
     return handler.handle(request, '/authenticated')
 
 
+@app.route('/following', methods=['GET', 'OPTIONS'])
+def following():
+    return handler.handle(request, '/following')
+
+
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

@@ -25,7 +25,6 @@ const Login = () => {
     }
 
     useEffect(async () => {
-        await Auth.login(credentials.user, credentials.password);
         if (await Auth.isLoggedIn()) {
             history.push('/me')
         }

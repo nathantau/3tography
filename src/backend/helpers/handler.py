@@ -3,7 +3,7 @@ from flask import Response
 import bcrypt
 
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user
+from .users import update_image, image_links, user_exists, create_user, get_user, get_following
 from .s3 import upload_img, gen_presigned_url
 from .auth import TokenHandler
 
@@ -30,6 +30,7 @@ def flow(request, path):
         '/me': me,
         '/login': login,
         '/register': register,
+        '/following': following,
         '/authenticated': authenticated
     }
     if path not in path_to_handler:
@@ -104,6 +105,7 @@ def me(request, **kwargs):
             continue
         unix_timestamp = int(link.split('&Expires=')[1])
         curr_timestamp = time.time()
+        print(unix_timestamp, curr_timestamp, unix_timestamp - curr_timestamp)
         if unix_timestamp - curr_timestamp < 3600:
             # Update presigned URL
             mapping = ['one', 'two', 'three']
@@ -123,23 +125,17 @@ def register(request, **kwargs):
     username = request.json.get('user')
     password = request.json.get('password')
     if not username or not password:
-        return {
-            'error': 'Missing username or password'
-        }
+        raise ValueError('Missing username or password')
     # Determine if user exists
     if user_exists(username):
-        return {
-            'error': 'User already exists'
-        }
+        raise ValueError('User already exists')
     # Register user
     hashed_pw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
     out, err = create_user(username, hashed_pw)
     if err:
-        return {
-            'error': 'Error inserting user into DB'
-        }
+        raise ValueError('Error inserting user into DB')
     return {
-        'success': f'Registered user {username}'
+        'registered': True
     }
 
 
@@ -157,9 +153,10 @@ def login(request, **kwargs):
     # Determine if user exists
     user_info = get_user(username)
     if not user_info:
-        return {
-            'error': f'Unable to find user {username}'
-        }
+        raise ValueError('User does not exist');
+        # return {
+        #     'error': f'Unable to find user {username}'
+        # }
     # Login user and generate auth token
     if bcrypt.checkpw(password.encode('utf8'), user_info['password'].encode('utf8')):
         return {
@@ -168,6 +165,16 @@ def login(request, **kwargs):
         }
     return {
         'error': 'Unable to login'
+    }
+
+
+def following(request, **kwargs):
+    '''
+    Retrieves all following of the given account.
+    '''
+    username = kwargs['username']
+    return {
+        'following': get_following(username)
     }
 
 

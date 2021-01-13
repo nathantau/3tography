@@ -21,14 +21,14 @@ def assume_role():
         response = sts.assume_role(
             RoleArn='arn:aws:iam::372123248858:role/threetography',
             RoleSessionName='FlaskSession',
-            DurationSeconds=60*60*8
+            DurationSeconds=3600*8
         )
         # Update credentials
         global credentials
         credentials = response.get('Credentials')
 
 
-def gen_presigned_url(user, pos, exp=60*60*24*7):
+def gen_presigned_url(user, pos, exp=3600*8):
     '''
     Generates a presigned url allowing any individual to access the given link for 2 hours.
     '''
