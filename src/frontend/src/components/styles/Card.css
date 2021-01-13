@@ -1,0 +1,20 @@
+.card {
+    margin: 10vh 25vw;
+    padding: 5vh 5vw;
+    text-align: center;
+}
+
+.card h1 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+}
+
+.card input {
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    margin: 1vh 0;
+}
+
+.card p {
+    font-family: 'Roboto', sans-serif;
+}

@@ -25,18 +25,26 @@ def upload():
     return handler.handle(request, '/upload')
 
     
-@app.route('/me', methods=['POST', 'OPTIONS'])
+@app.route('/me', methods=['GET', 'OPTIONS'])
 def me():
     # check if user exists
     return handler.handle(request, '/me')
 
+
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
-    pass
+    return handler.handle(request, '/register')
+
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    pass
+    return handler.handle(request, '/login')
+
+
+@app.route('/authenticated', methods=['GET', 'OPTIONS'])
+def authenticated():
+    return handler.handle(request, '/authenticated')
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

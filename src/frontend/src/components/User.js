@@ -3,21 +3,22 @@ import Following from './Following';
 import Image from './Image';
 import './styles/User.css'
 
-const User = ({ username }) => {
+const User = () => {
 
-    const [imageUrls, setImageUrls] = useState([]);
+    const [username, setUsername] = useState('');
+    const [imageUrls, setImageUrls] = useState(['', '', '']);
 
     const fetchUser = async () => {
-        const userInfo = await fetch('http://localhost:5000/me', {
-            method: 'POST',
+        let userInfo = await fetch('http://localhost:5000/me', {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user: 'sam'
-            })
-        }).then(res => res.json());
-        console.log(userInfo)
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`
+            }
+        });
+        userInfo = await userInfo.json();
+        console.log('refreshed')
+        setUsername(userInfo.user);
         setImageUrls(userInfo.imageUrls);
     }
 

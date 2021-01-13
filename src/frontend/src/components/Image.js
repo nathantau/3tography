@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/Image.css'
 
-const Image = ({ user, url, pos, refresh }) => {
+const Image = ({ url, pos, refresh }) => {
     
     const input = useRef(null);
     const [file, changeFile] = useState(null);
@@ -25,19 +25,21 @@ const Image = ({ user, url, pos, refresh }) => {
     const handleSubmit = async () => {
         const formData = new FormData();
         formData.append('File', file);
-        formData.append('user', user);
         formData.append('pos', pos);
         try {
             let response = await fetch('http://localhost:5000/upload', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
+                }
             });
-            if (response.ok) {
-                await refresh();
-                console.log(response);
-            }
+            response = await response.json();
+            console.log('response', response);
+            await refresh();
         } catch (error) {
-            console.log(error);
+            console.log('error');
+            console.error(error);
         }
     }
 
@@ -47,8 +49,8 @@ const Image = ({ user, url, pos, refresh }) => {
 
     return (
         <>
-            <div class='image-wrapper'>
-                <img src={url} onClick={uploadImage}></img>
+            <div class='image-wrapper' onClick={uploadImage}>
+                <img src={url}></img>
             </div>
             <form>
                 <input ref={input} onChange={handleInputChange} type='file' name='File' hidden/>
