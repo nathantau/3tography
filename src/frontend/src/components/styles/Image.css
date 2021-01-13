@@ -1,0 +1,20 @@
+.image-wrapper {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    background: black;
+    margin: 10px 0;
+}
+
+.image-wrapper img {
+    max-width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.image-wrapper:hover {
+    cursor: pointer;
+}

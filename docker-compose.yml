@@ -1,11 +1,39 @@
 version: "3"
 services:
-  app:
-    image: ubuntu
+  frontend:
+    build: ./src/frontend
+    expose:
+      - 3000
     ports:
-      - "80:80"
-      - "3000:3000"
+      - 3000:3000
     env_file:
       - ./app.env
     volumes:
-      - ./src:/home/src
+      - ./src/frontend:/app
+      - /app/node_modules
+    links:
+      - backend
+  backend:
+    build: ./src/backend
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+    env_file:
+      - ./app.env
+    volumes:
+      - ./src/backend:/home/backend
+      - ./src/.aws/credentials:/root/.aws/credentials
+    links:
+      - db
+    restart: always
+  db:
+    image: postgres:11
+    expose:
+      - 5432
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: nathan
+    restart: always
+    volumes:
+      - ./src/db:/var/lib/postgresql/data
