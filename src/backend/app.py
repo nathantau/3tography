@@ -51,5 +51,10 @@ def following():
     return handler.handle(request, '/following')
 
 
+@app.route('/follow', methods=['POST', 'OPTIONS'])
+def follow():
+    return handler.handle(request, '/follow')
+
+
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

@@ -6,30 +6,21 @@ import Me from './components/Me';
 import Login from './components/Login';
 import Register from './components/Register';
 import PrivateRoute from './components/Private';
+import Feed from './components/Feed';
 import Auth from './utils/auth';
-import { useEffect, useState } from 'react';
+import Logo from './components/Logo';
 
 function App() {
 
-    // const history = useHistory();
-    // // Determine authorization status
-    // useEffect(async () => {
-    //     await Auth.init();
-    //     if (!Auth.authenticated) {
-    //         history.push('/login');
-    //     } else {
-    //     }
-    // }, []);
+    Auth.init();
 
     return (
         <div className="App">
-            <div class='home-banner'>
-                <h1>3tography</h1>
-            </div>
             <Router>
-                <Route exact path='/' component={Me}></Route>
-                <PrivateRoute path='/feed' component={Me} authenticated={localStorage.getItem('3tography-access-token')}></PrivateRoute>
-                <PrivateRoute path='/me' component={Me} authenticated={localStorage.getItem('3tography-access-token')}></PrivateRoute>
+                <Logo></Logo>
+                {/* <Route exact path='/' component={Me}></Route> */}
+                <PrivateRoute path='/feed' component={Feed}></PrivateRoute>
+                <PrivateRoute path='/' component={Me}></PrivateRoute>
                 <Route path='/register' component={Register}></Route>
                 <Route path='/login' component={Login}></Route>
             </Router>

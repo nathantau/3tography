@@ -17,16 +17,16 @@ const Login = () => {
             }
             await Auth.login(credentials.user, credentials.password);
             if (await Auth.isLoggedIn()) {
-                history.push('/me')
+                history.push('/')
             }
         } catch (err) {
             console.error(err);
         }
     }
 
-    useEffect(async () => {
-        if (await Auth.isLoggedIn()) {
-            history.push('/me')
+    useEffect(() => {
+        if (Auth.authenticated) {
+            history.push('/');
         }
     }, []);
 

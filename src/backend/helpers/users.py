@@ -1,42 +1,22 @@
-import psycopg2
-import os
+from .pg import create_connection, close_connection
 
 
-DB_NAME = os.environ.get('PGUSER')
-DB_USER = os.environ.get('PGUSER')
-
-
-def create_connection():
-    try:
-        connection = psycopg2.connect(f'dbname={DB_NAME} user={DB_USER}')
-        cursor = connection.cursor()
-        return cursor, connection
-    except Exception as e:
-        return False, e
-    
-
-def close_connection(cursor, connection):
-    try:
-        cursor.close()
-        connection.close()
-        return True, None
-    except Exception as e:
-        return False, e
-
-
-def user_info(user):
+def query_user(username):
     '''
     Returns None if user does not exist.
     '''
     cur, conn = create_connection()
-    cur.execute(f'SELECT * FROM users WHERE username = \'{user}\'')
+    cur.execute(f'SELECT * FROM users WHERE username = \'{username}\'')
     info = cur.fetchone()
     close_connection(cur, conn)
     return info
 
 
 def get_user(username):
-    info = user_info(username)
+    '''
+    Returns an object representation of a user, None if it does not exist.
+    '''
+    info = query_user(username)
     if not info:
         return None
     fields = ['username', 'password', 'followers', 'following', 'one', 'two', 'three', 'profile', 'description']
@@ -46,13 +26,19 @@ def get_user(username):
 
 
 def get_following(username):
+    '''
+    Returns a set of usernames of the accounts the user is following.
+    '''
     user = get_user(username)
     if not user:
         return []
-    return user['following']
+    return set(user['following'])
 
 
 def image_links(username):
+    '''
+    Returns the S3 URLs of the user's images.
+    '''
     user = get_user(username)
     if not user:
         return []
@@ -78,46 +64,44 @@ def create_user(username, password):
             (username, password, [], [], '', '', '', '', '')
         )
         conn.commit()
+        close_connection(cur, conn)
         return True, None
     except Exception as e:
         return False, e
 
 
-def update_user(username, column, value):
+def update_user(username, column, value, is_array=False):
     try:
         cur, conn = create_connection()
-        cur.execute(
-            f'UPDATE users SET {column} = \'{value}\' WHERE username = \'{username}\''
-        )
+        if is_array:
+            cur.execute(
+                'UPDATE users SET {} = array_append({}, %s)'.format(column, column),
+                (value)
+            )
+        else:
+            cur.execute(
+                f'UPDATE users SET {column} = \'{value}\' WHERE username = \'{username}\''
+            )
         conn.commit()
+        close_connection(cur, conn)
         return True, None
     except Exception as e:
         return False, e    
 
 
-# def follow(user1, user2):
-#     '''
-#     Makes user1 follow user2.
-#     '''
-#     # Ensure both users exist
-#     if not user_exists(user1) or not user_exists(user2):
-#         return None, 'Specified user(s) do not exist'
-#     # Update both user1 and user2 rows
-#     query_str = '''
-#         UPDATE users
-#         SET following = array_append(following, '{}')
-#         WHERE username = '{}'
-#     '''.format(user2, user1)
-#     out, err = query(query_str)
-#     if err:
-#         return None, 'Error updating following list {}'.format(str(err))
-#     query_str = '''
-#         UPDATE users
-#         SET followers = array_append(followers, '{}')
-#         WHERE username = '{}'
-#     '''.format(user1, user2)
-#     out, err = query(query_str)
-#     return out, err
+def set_follow(username1, username2):
+    '''
+    Makes user1 follow user2.
+    '''
+    if not user_exists(username1) or not user_exists(username2):
+        raise ValueError('Specified user(s) do not exist')
+    user = get_user(username=username1)
+    if username2 in set(user['following']):
+        raise ValueError('User is already being followed')
+    success, err = update_user(username1, 'following', username2, is_array=True)
+    if err:
+        raise ValueError(err)
+    return True
 
 
 # def list_users():

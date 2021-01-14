@@ -22,13 +22,6 @@ const Register = () => {
         }
     }
 
-    useEffect(async () => {
-        if (await Auth.isLoggedIn()) {
-            history.push('/me')
-        }
-    }, []);
-
-
     return (
         <>
             <div className='container'>

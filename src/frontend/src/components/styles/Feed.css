@@ -1,0 +1,44 @@
+.feed-image-wrapper {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: relative;
+    background: white;
+    margin: 10px 0;
+}
+
+.feed-image-wrapper img {
+    max-width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+
+/* 
+.card img {
+    wid
+} */
+
+/* .card {
+    margin: 10vh 25vw;
+    padding: 5vh 5vw;
+    text-align: center;
+}
+
+.card h1 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+}
+
+.card input {
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    margin: 1vh 0;
+}
+
+.card p {
+    font-family: 'Roboto', sans-serif;
+} */

@@ -35,7 +35,6 @@ const Image = ({ url, pos, refresh }) => {
                 }
             });
             response = await response.json();
-            console.log('response', response);
             await refresh();
         } catch (error) {
             console.log('error');

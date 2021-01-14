@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Following from './Following';
+import React, { useEffect, useState } from 'react';
 import Image from './Image';
 import './styles/User.css'
 
@@ -17,6 +16,7 @@ const User = () => {
             }
         });
         userInfo = await userInfo.json();
+        console.log(userInfo)
         setUsername(userInfo.user);
         setImageUrls(userInfo.imageUrls);
     }

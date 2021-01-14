@@ -3,6 +3,7 @@ Wrapper module for AWS S3 functionalities.
 '''
 
 import boto3
+import time
 
 
 BUCKET = '3tography'
@@ -49,6 +50,19 @@ def gen_presigned_url(user, pos, exp=3600*8):
     except Exception as e:
         print('[ERR] Error generating presigned url: {}'.format(str(e)))
         return None
+
+
+def refresh_url(user, pos, link):
+    '''
+    Regenerates and returns an S3 presigned URL if it is within an hour of expiry.
+    '''
+    if '&Expires=' not in link:
+        return None
+    unix_timestamp = int(link.split('&Expires=')[1])
+    curr_timestamp = time.time()
+    if unix_timestamp - curr_timestamp < 3600*7:
+        return gen_presigned_url(user, pos, exp=3600*8)
+    return link
 
 
 def upload_img(user, filename):

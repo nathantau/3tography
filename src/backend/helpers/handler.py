@@ -3,8 +3,8 @@ from flask import Response
 import bcrypt
 
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user, get_following
-from .s3 import upload_img, gen_presigned_url
+from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow
+from .s3 import upload_img, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
 
@@ -31,6 +31,7 @@ def flow(request, path):
         '/login': login,
         '/register': register,
         '/following': following,
+        '/follow': follow,
         '/authenticated': authenticated
     }
     if path not in path_to_handler:
@@ -44,18 +45,13 @@ def flow(request, path):
             raise Exception('Unable to decode access token')
         decoded_token = TokenHandler.decode_token(token.replace('Bearer ', ''), secret_key=SECRET_KEY)
         username = decoded_token['sub']
-        return path_to_handler[path](request, username=username)
+        return path_to_handler[path](request=request, username=username)
     else:
-        return path_to_handler[path](request)
+        return path_to_handler[path](request=request)
 
 
-def hello_world(request):
-    return "hello"
-
-
-def upload(request, **kwargs):
-    # CHECK IF USER IS AUTHENTICATED/EXISTS FIRST
-    pass
+def upload(**kwargs):
+    request = kwargs['request']
     # Determine position to upload
     pos = request.form.get('pos')
     user = kwargs['username']
@@ -77,21 +73,17 @@ def upload(request, **kwargs):
     # Generate S3 presigned URL
     url = gen_presigned_url(user, pos)
     if not url:
-        return {
-            'error': 'Unable to generate presigned URL for uploaded image'
-        }
+        raise ValueError('Unable to generate presigned URL for uploaded image')
     # Update URL in PG
     _, error = update_image(user, pos, url)
     if error:
-        return {
-            'error': error
-        }
+        raise ValueError(error)
     return {
         'status': f'Successfully uploaded image for {user}'
     }
 
 
-def me(request, **kwargs):
+def me(**kwargs):
     '''
     Retrieves S3 presigned URLs from DB and generates new ones if they are
     within an hour of expiration.
@@ -99,28 +91,20 @@ def me(request, **kwargs):
     user = kwargs['username']
     links = image_links(user)
     updated_links = list(links)
+    filenames = ['one', 'two', 'three']
     for idx, link in enumerate(links):
-        # Check if link within hour of expiry
-        if '&Expires=' not in link:
-            continue
-        unix_timestamp = int(link.split('&Expires=')[1])
-        curr_timestamp = time.time()
-        print(unix_timestamp, curr_timestamp, unix_timestamp - curr_timestamp)
-        if unix_timestamp - curr_timestamp < 3600:
-            # Update presigned URL
-            mapping = ['one', 'two', 'three']
-            updated_links[idx] = gen_presigned_url(user, mapping[idx])
+        updated_links[idx] = refresh_url(user, filenames[idx], link)
     return {
         'user': user,
-        'profileUrl': '',
         'imageUrls': updated_links
     }
 
 
-def register(request, **kwargs):
+def register(**kwargs):
     '''
     Creates a new user in the database.
     '''
+    request = kwargs['request']
     # Get user information
     username = request.json.get('user')
     password = request.json.get('password')
@@ -139,10 +123,11 @@ def register(request, **kwargs):
     }
 
 
-def login(request, **kwargs):
+def login(**kwargs):
     '''
     Logs in a user and returns an authorization token.
     '''
+    request = kwargs['request']
     # Get user information
     username = request.json.get('user')
     password = request.json.get('password')
@@ -154,9 +139,6 @@ def login(request, **kwargs):
     user_info = get_user(username)
     if not user_info:
         raise ValueError('User does not exist');
-        # return {
-        #     'error': f'Unable to find user {username}'
-        # }
     # Login user and generate auth token
     if bcrypt.checkpw(password.encode('utf8'), user_info['password'].encode('utf8')):
         return {
@@ -168,17 +150,31 @@ def login(request, **kwargs):
     }
 
 
-def following(request, **kwargs):
+def follow(**kwargs):
     '''
-    Retrieves all following of the given account.
+    The user follows the specified user in the request.
     '''
     username = kwargs['username']
+    request = kwargs['request']
     return {
-        'following': get_following(username)
+        'followed': set_follow(username, request.json.get('user'))
     }
 
 
-def authenticated(request, **kwargs):
+def following(**kwargs):
+    '''
+    Retrieves all following of the given account (with S3 URLs).
+    '''
+
+    username = kwargs['username']
+    users = [me(username=user) for user in get_following(username)]
+    return {
+        'following': users
+    }
+
+
+def authenticated(**kwargs):
+    request = kwargs['request']
     try:
         token = request.headers.get('Authorization')
         if not token or not TokenHandler.decode_token(token.replace('Bearer ', ''), SECRET_KEY):

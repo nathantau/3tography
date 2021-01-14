@@ -23,10 +23,11 @@ const Auth = {
             res = await res.json();
             if (res.success && res.accessToken) {
                 localStorage.setItem('3tography-access-token', res.accessToken);
+                Auth.authenticated = true;
             }
         } catch (err) {
             console.error(err);
-            Auth.logout();
+            // Auth.logout();
         }
     },
     register: async (username, password) => {
@@ -51,8 +52,12 @@ const Auth = {
         }
         return false; 
     },
-    logout: () => {
+    logout: history => {
+        Auth.authenticated = false;
         localStorage.removeItem('3tography-access-token');
+        if (history) {
+            history.push('/login')
+        }
     },
     isLoggedIn: async () => {
         try {
@@ -68,6 +73,7 @@ const Auth = {
                 }
             );
             res = await res.json();
+            console.log('authenticated', res)
             if (res.authenticated) {
                 return true;
             }

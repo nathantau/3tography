@@ -1,29 +1,24 @@
-import subprocess
+import psycopg2
+import os
 
-def drop_table(table_name):
-    query_str = '''
-        DROP TABLE {}
-    '''.format(table_name)
-    out, err = query(query_str)
-    return out, err    
 
-def dump():
-    pass
+DB_NAME = os.environ.get('PGUSER')
+DB_USER = os.environ.get('PGUSER')
 
-def query(query_str):
-    '''
-    Performs the specified query.
-    '''
-    cmd = ['psql', '-Atc', '{}'.format(query_str)]
-    query_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    out, err = query_proc.communicate()
-    return parse_output(out), err
 
-def parse_output(out):
-    '''
-    Parses output from psql console.
-    '''
-    out = out.decode('utf-8')
-    rows = [row.split('|') for row in out.split('\n')]
-    return rows[:-1]
+def create_connection():
+    try:
+        connection = psycopg2.connect(f'dbname={DB_NAME} user={DB_USER}')
+        cursor = connection.cursor()
+        return cursor, connection
+    except Exception as e:
+        return False, e
+    
 
+def close_connection(cursor, connection):
+    try:
+        cursor.close()
+        connection.close()
+        return True, None
+    except Exception as e:
+        return False, e
