@@ -26,26 +26,33 @@ const User = () => {
     }, [])
 
     return (
-        <div class='container'>
-            <div class='heading'>
-                <div class='profile-wrapper'>
-                    <img id='profile' src={imageUrls[0]}/>
+        <>
+        {
+            imageUrls && imageUrls.length === 3 ?
+                <div class='container'>
+                    <div class='heading'>
+                        <div class='profile-wrapper'>
+                            <img id='profile' src={imageUrls[0]}/>
+                        </div>
+                        <h2>{username}</h2>
+                        <p>UW '25 Dreamer ; Traveller; Explorer</p>
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-4 col-sm-12'>
+                            <Image url={imageUrls[0]} pos='one' refresh={fetchUser}></Image>
+                        </div>
+                        <div class='col-lg-4 col-sm-12'>
+                            <Image url={imageUrls[1]} pos='two' refresh={fetchUser}></Image>
+                        </div>
+                        <div class='col-lg-4 col-sm-12'>
+                            <Image url={imageUrls[2]} pos='three' refresh={fetchUser}></Image>
+                        </div>
+                    </div>
                 </div>
-                <h2>{username}</h2>
-                <p>UW '25 Dreamer ; Traveller; Explorer</p>
-            </div>
-            <div class='row'>
-                <div class='col-lg-4 col-sm-12'>
-                    <Image url={imageUrls[0]} pos='one' refresh={fetchUser}></Image>
-                </div>
-                <div class='col-lg-4 col-sm-12'>
-                    <Image url={imageUrls[1]} pos='two' refresh={fetchUser}></Image>
-                </div>
-                <div class='col-lg-4 col-sm-12'>
-                    <Image url={imageUrls[2]} pos='three' refresh={fetchUser}></Image>
-                </div>
-            </div>
-        </div>
+            :
+            null
+        }
+        </>
     )
 }
 

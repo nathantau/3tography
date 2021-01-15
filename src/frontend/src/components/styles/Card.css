@@ -4,7 +4,7 @@
     text-align: center;
 }
 
-.prompt-card h1 {
+.prompt-card h1, h6 {
     font-family: 'Roboto', sans-serif;
     font-weight: 900;
 }

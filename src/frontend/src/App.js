@@ -9,6 +9,8 @@ import PrivateRoute from './components/Private';
 import Feed from './components/Feed';
 import Auth from './utils/auth';
 import Logo from './components/Logo';
+import Footer from './components/Footer';
+import Search from './components/Search';
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
                 <PrivateRoute path='/feed' component={Feed}></PrivateRoute>
                 <Route path='/register' component={Register}></Route>
                 <Route path='/login' component={Login}></Route>
+                <Route path='/search' component={Search}></Route>
+                <Footer></Footer>
             </Router>
         </div>
     );

@@ -104,6 +104,17 @@ def set_follow(username1, username2):
     return True
 
 
+def get_similar_usernames(username):
+    '''
+    Retrieves all users with usernames like ${username}(.)*.
+    '''
+    cur, conn = create_connection()
+    cur.execute(f'SELECT username FROM users WHERE username LIKE \'{username}%\'')
+    similar_usernames = list([item[0] for item in cur.fetchall()])
+    close_connection(cur, conn)
+    return similar_usernames
+
+
 # def list_users():
 #     query_str = '''
 #         SELECT * FROM users

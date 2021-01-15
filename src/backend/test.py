@@ -31,11 +31,11 @@ from helpers import pg
 # username, column, value, is_array=False
 # print(users.update_user('nate', 'following', 'test1', True))
 
+username = 'x'
 
 cur, conn = pg.create_connection()
 cur.execute(
-    'UPDATE users SET {} = array_append({}, %s)'.format('following', 'following'),
-    ('test1',)
+    f'SELECT username FROM users WHERE username LIKE \'{username}%\''
 )
-conn.commit()
+print(cur.fetchall())
 pg.close_connection(cur, conn)

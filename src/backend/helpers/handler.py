@@ -2,8 +2,9 @@ import os, json, time
 from flask import Response
 import bcrypt
 
+
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow
+from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames
 from .s3 import upload_img, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
@@ -32,6 +33,7 @@ def flow(request, path):
         '/register': register,
         '/following': following,
         '/follow': follow,
+        '/search': search,
         '/authenticated': authenticated
     }
     if path not in path_to_handler:
@@ -165,7 +167,6 @@ def following(**kwargs):
     '''
     Retrieves all following of the given account (with S3 URLs).
     '''
-
     username = kwargs['username']
     users = [me(username=user) for user in get_following(username)]
     return {
@@ -188,3 +189,14 @@ def authenticated(**kwargs):
         return {
             'error': str(e)
         }
+
+
+def search(**kwargs):
+    username = kwargs['username']
+    request = kwargs['request']
+    to_search = request.args.get('user')
+    if not to_search:
+        raise ValueError('No user passed in')
+    return {
+        'results': get_similar_usernames(to_search)
+    }

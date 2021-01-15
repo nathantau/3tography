@@ -50,7 +50,7 @@ const Image = ({ url, pos, refresh }) => {
                 <img alt={url} src={url}></img>
             </div>
             <form>
-                <input ref={input} onChange={handleInputChange} type='file' name='File' hidden/>
+                <input ref={input} onChange={handleInputChange} type='file' accept='.png,.jpg' name='File' hidden/>
             </form>
         </>
     )

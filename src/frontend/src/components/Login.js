@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import './styles/Card.css';
 import Auth from '../utils/auth';
+
 
 
 const Login = () => {
@@ -25,10 +26,13 @@ const Login = () => {
     }
 
     useEffect(() => {
-        if (Auth.authenticated) {
-            history.push('/');
+        const fetchData = async () => {
+            if (await Auth.isLoggedIn()) {
+                history.push('/');
+            }
         }
-    }, [history]);
+        fetchData();
+    }, []);
 
     return (
         <>
@@ -40,7 +44,7 @@ const Login = () => {
                         <input type='password' onChange={event => setCredentials({...credentials, password: event.target.value})} placeholder='Please enter your password'></input>
                         <input type='submit' value='Login'></input>
                     </form>
-                    <p>Don't have an account? Register here</p>
+                    <p>Don't have an account? <Link to='/register'>Register here</Link></p>
                 </div>
             </div>        
         </>

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from helpers import s3, auth, pg, users, cors, handler
 
 import json
@@ -49,6 +49,11 @@ def authenticated():
 @app.route('/following', methods=['GET', 'OPTIONS'])
 def following():
     return handler.handle(request, '/following')
+
+
+@app.route('/search', methods=['GET', 'OPTIONS'])
+def search():
+    return handler.handle(request, '/search')
 
 
 @app.route('/follow', methods=['POST', 'OPTIONS'])

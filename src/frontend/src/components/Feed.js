@@ -2,22 +2,27 @@ import React, { useEffect, useState } from 'react';
 import './styles/Feed.css'
 import './styles/Card.css'
 import FeedUtils from '../utils/feed';
+import Auth from '../utils/auth';
+import { useHistory } from 'react-router';
 
 const Feed = () => {
 
     const [following, setFollowing] = useState([]);
 
-    useEffect(() => {
+    const history = useHistory();
 
+    useEffect(() => {
         const fetchData = async () => {
-            const res = await FeedUtils.getFollowing();
-            if (res) {
-                setFollowing(res);
+            if (!await Auth.isLoggedIn()) {
+                history.push('/login');
+            } else {
+                const res = await FeedUtils.getFollowing();
+                if (res) {
+                    setFollowing(res);
+                }
             }
         }
-
         fetchData();
-
     }, []);
 
     return (

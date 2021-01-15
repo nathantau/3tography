@@ -1,5 +1,3 @@
-import Feed from "../components/Feed";
-
 const host = 'http://localhost:5000';
 const FeedUtils = {
     getFollowing: async () => {
