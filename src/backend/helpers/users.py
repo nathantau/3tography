@@ -104,6 +104,29 @@ def set_follow(username1, username2):
     return True
 
 
+def set_unfollow(username1, username2):
+    '''
+    Makes user1 unfollow user2.
+    '''
+    if not user_exists(username1) or not user_exists(username2):
+        raise ValueError('Specified user(s) do not exist')
+    user = get_user(username=username1)
+    if username2 not in set(user['following']):
+        raise ValueError('User is not being followed')
+    user['following'].remove(username2)
+    try:
+        cur, conn = create_connection()
+        cur.execute(
+            f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
+            (user['following'], )
+        )
+        conn.commit()
+        close_connection(cur, conn)
+        return True
+    except Exception as e:
+        return False
+
+
 def get_similar_usernames(username):
     '''
     Retrieves all users with usernames like ${username}(.)*.

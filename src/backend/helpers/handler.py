@@ -4,7 +4,7 @@ import bcrypt
 
 
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames
+from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow
 from .s3 import upload_img, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
@@ -19,7 +19,9 @@ def handle(request, path):
             return modify_headers(Response())
         return modify_headers(Response(json.dumps(flow(request, path))))
     except Exception as e:
-        return modify_headers(Response(json.dumps({
+        return modify_headers(Response(
+            
+            json.dumps({
             'reasonForFailure': str(e)
             }), status=500
         ))
@@ -33,6 +35,7 @@ def flow(request, path):
         '/register': register,
         '/following': following,
         '/follow': follow,
+        '/unfollow': unfollow,
         '/search': search,
         '/authenticated': authenticated
     }
@@ -160,6 +163,17 @@ def follow(**kwargs):
     request = kwargs['request']
     return {
         'followed': set_follow(username, request.json.get('user'))
+    }
+
+
+def unfollow(**kwargs):
+    '''
+    The user follows the specified user in the request.
+    '''
+    username = kwargs['username']
+    request = kwargs['request']
+    return {
+        'unfollowed': set_unfollow(username, request.json.get('user'))
     }
 
 

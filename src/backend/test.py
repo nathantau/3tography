@@ -24,18 +24,40 @@
 # from helpers import pg
 
 
-from helpers import pg
+from helpers import pg, users
 # print(users.test())
 # print(users.get_user('nate'))
 # users.set_follow('nate','test1')
 # username, column, value, is_array=False
 # print(users.update_user('nate', 'following', 'test1', True))
 
-username = 'x'
+username1 = 'nate'
 
 cur, conn = pg.create_connection()
+# cur.execute(
+#     f'SELECT username FROM users WHERE username LIKE \'{username}%\''
+# )
+# print(cur.fetchall())
+# pg.close_connection(cur, conn)
+
+# print(users.set_unfollow('nate', 'test'))
+
+user = users.get_user(username1)
+
+# user['following'].remove('a')
+
+# cur.execute(
+#     f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
+#     (user['following'], )
+# )
+
+# conn.commit()
+
+
+user['following'].remove('test3')
 cur.execute(
-    f'SELECT username FROM users WHERE username LIKE \'{username}%\''
+    f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
+    (user['following'], )
 )
-print(cur.fetchall())
+conn.commit()
 pg.close_connection(cur, conn)

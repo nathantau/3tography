@@ -6,6 +6,7 @@ import os
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def hello_world():
     response = Response(json.dumps({
@@ -59,6 +60,11 @@ def search():
 @app.route('/follow', methods=['POST', 'OPTIONS'])
 def follow():
     return handler.handle(request, '/follow')
+
+
+@app.route('/unfollow', methods=['POST', 'OPTIONS'])
+def unfollow():
+    return handler.handle(request, '/unfollow')
 
 
 if __name__ == '__main__':
