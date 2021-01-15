@@ -15,7 +15,6 @@ const FeedUtils = {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}` }
             });
             res = await res.json();
-            console.log('yo',res)
             return res.following;
         } catch (err) {
             console.error(err);

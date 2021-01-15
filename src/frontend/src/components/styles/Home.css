@@ -2,5 +2,13 @@
     background-color: black;
     color: white;
     padding: 1vh;
+}
+
+.home-banner h1 {
     font-family: 'Lobster Two', cursive;
+}
+
+.home-banner h6 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
 }

@@ -76,7 +76,7 @@ def update_user(username, column, value, is_array=False):
         if is_array:
             cur.execute(
                 'UPDATE users SET {} = array_append({}, %s)'.format(column, column),
-                (value)
+                (value, )
             )
         else:
             cur.execute(

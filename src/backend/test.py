@@ -24,7 +24,18 @@
 # from helpers import pg
 
 
-from helpers import users
-print(users.test())
+from helpers import pg
+# print(users.test())
 # print(users.get_user('nate'))
-# users.set_follow('nate','a')
+# users.set_follow('nate','test1')
+# username, column, value, is_array=False
+# print(users.update_user('nate', 'following', 'test1', True))
+
+
+cur, conn = pg.create_connection()
+cur.execute(
+    'UPDATE users SET {} = array_append({}, %s)'.format('following', 'following'),
+    ('test1',)
+)
+conn.commit()
+pg.close_connection(cur, conn)

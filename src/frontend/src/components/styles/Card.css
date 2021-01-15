@@ -4,17 +4,22 @@
     text-align: center;
 }
 
-.card h1 {
+.prompt-card h1 {
     font-family: 'Roboto', sans-serif;
     font-weight: 900;
 }
 
-.card input {
+.prompt-card input {
     font-family: 'Roboto', sans-serif;
     width: 100%;
     margin: 1vh 0;
 }
 
-.card p {
+.prompt-card p {
     font-family: 'Roboto', sans-serif;
+}
+
+.feed-card {
+    text-align: left;
+    border: 0;
 }

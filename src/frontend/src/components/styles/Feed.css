@@ -1,6 +1,6 @@
 .feed-image-wrapper {
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
     overflow: hidden;
     position: relative;
     background: white;
@@ -15,30 +15,12 @@
     transform: translateY(-50%);
 }
 
-
-
-/* 
-.card img {
-    wid
-} */
-
-/* .card {
-    margin: 10vh 25vw;
-    padding: 5vh 5vw;
-    text-align: center;
+.feed-profile-wrapper {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
 }
 
-.card h1 {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 900;
+.feed-profile-wrapper img {
+    object-fit: cover;
 }
-
-.card input {
-    font-family: 'Roboto', sans-serif;
-    width: 100%;
-    margin: 1vh 0;
-}
-
-.card p {
-    font-family: 'Roboto', sans-serif;
-} */

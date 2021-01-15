@@ -16,31 +16,28 @@ const Image = ({ url, pos, refresh }) => {
         }
     }
 
-    useEffect(async () => {
-        if (file !== null && file.name !== '') {
-            await handleSubmit();
-        }
-    }, [file]);
-
-    const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append('File', file);
-        formData.append('pos', pos);
-        try {
-            let response = await fetch('http://localhost:5000/upload', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
+    useEffect(() => {
+        const submit = async () => {
+            if (file !== null && file.name !== '') {
+                const formData = new FormData();
+                formData.append('File', file);
+                formData.append('pos', pos);
+                try {
+                    await fetch('http://localhost:5000/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
+                        }
+                    });
+                    await refresh();
+                } catch (error) {
+                    console.error(error);
                 }
-            });
-            response = await response.json();
-            await refresh();
-        } catch (error) {
-            console.log('error');
-            console.error(error);
+            }
         }
-    }
+        submit();
+    }, [file, pos, refresh]);
 
     const uploadImage = () => {
         input.current.click();
@@ -49,7 +46,7 @@ const Image = ({ url, pos, refresh }) => {
     return (
         <>
             <div class='image-wrapper' onClick={uploadImage}>
-                <img src={url}></img>
+                <img alt={url} src={url}></img>
             </div>
             <form>
                 <input ref={input} onChange={handleInputChange} type='file' name='File' hidden/>

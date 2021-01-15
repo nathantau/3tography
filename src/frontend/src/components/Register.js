@@ -25,7 +25,7 @@ const Register = () => {
     return (
         <>
             <div className='container'>
-                <div className='card'>
+                <div className='prompt-card card'>
                     <h1>Register</h1>
                     <form onSubmit={handleSubmit} >
                         <input type='text' onChange={event => setCredentials({...credentials, user: event.target.value})} placeholder='Please enter your username'></input>

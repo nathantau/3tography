@@ -1,6 +1,6 @@
 const host = 'http://localhost:5000';
 const Auth = {
-    authenticated: false,
+    authenticated: localStorage.getItem('3tography-access-token'),
     init: async () => {
         try {
             Auth.authenticated = await Auth.isLoggedIn();
