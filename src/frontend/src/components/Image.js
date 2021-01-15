@@ -35,9 +35,10 @@ const Image = ({ url, pos, refresh }) => {
                     console.error(error);
                 }
             }
+            changeFile(null);
         }
         submit();
-    }, [file, pos, refresh]);
+    }, [file]);
 
     const uploadImage = () => {
         input.current.click();
