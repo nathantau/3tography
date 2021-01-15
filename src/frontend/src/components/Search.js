@@ -55,20 +55,25 @@ const Search = () => {
     }
 
     const unfollow = async toUnfollow => {
-        // try {
-        //     const res = await fetch(`${server}/follow?user=${username}`, {
-        //         headers: {
-        //             'method': 'POST',
-        //             'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`
-        //         },
-        //         body: JSON.stringify({
-        //             user: toFollow
-        //         })
-        //     }).then(res => res.json());
-
-        // } catch (err) {
-        //     console.error(err);
-        // }
+        try {
+            const res = await fetch(`${server}/unfollow`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: toUnfollow
+                })
+            }).then(res => res.json());
+            if (res.unfollowed) {
+                const updatedList = new Set(followingList);
+                updatedList.delete(toUnfollow);
+                setFollowing(new Set(updatedList));
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     useEffect(() => {

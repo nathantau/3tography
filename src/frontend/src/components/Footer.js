@@ -24,7 +24,7 @@ const Footer = () => {
                 </div>
                 <div className='col-lg-2'>
                     <Link style={{ textDecoration: 'none', color: 'white' }} to={'/search'}>
-                        Search 🔍
+                        Follow 🔍
                     </Link>
                 </div>
                 <div className='col-lg-2'>
