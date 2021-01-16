@@ -5,34 +5,35 @@ import bcrypt
 
 from .cors import modify_headers
 from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow, update_description
-from .s3 import upload_img, gen_presigned_url, refresh_url
+from .s3 import upload_image, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
 
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'DEFAULT_SECRET'
-BYPASS_AUTH = {'/login', '/register', '/authenticated'}
+BYPASS_AUTH = {'/login', '/register'}
 
 
 def handle(request, path):
+    ''' Abstracts CORS and errors '''
     try:
         if request.method == 'OPTIONS':
             return modify_headers(Response())
         return modify_headers(Response(json.dumps(flow(request, path))))
-    except Exception as e:
+    except Exception as error:
         return modify_headers(Response(
-            
             json.dumps({
-            'reasonForFailure': str(e)
+                'reasonForFailure': str(error)
             }), status=500
         ))
 
 
 def flow(request, path):
+    ''' High-level encapsulation of route-handling '''
     path_to_handler = {
-        '/upload': upload,
-        '/me': me,
         '/login': login,
         '/register': register,
+        '/upload': upload,
+        '/me': me,
         '/following': following,
         '/follow': follow,
         '/unfollow': unfollow,
@@ -53,55 +54,62 @@ def flow(request, path):
         username = decoded_token['sub']
         return path_to_handler[path](request=request, username=username)
     else:
+        # Skip authentication
         return path_to_handler[path](request=request)
 
 
 def upload(**kwargs):
+    ''' Uploads an image into S3 and retrieves its presigned URL '''
     request = kwargs['request']
-    # Determine position to upload
+    username = kwargs['username']
     pos = request.form.get('pos')
-    user = kwargs['username']
     # Download image into /tmp/users directory
     image = request.files.get('File', '')
-    directory = f'/tmp/users/{user}/'
+    directory = f'/tmp/users/{username}/'
     # Create directory if not already exists
     if not os.path.exists(directory):
         os.makedirs(directory)
     image.save(f'{directory}/{pos}.png')
     # Upload to S3
-    _, error = upload_img(user, f'{pos}.png')
+    _, error = upload_image(username, f'{pos}.png')
     # Delete image's local copy
     os.remove(f'{directory}/{pos}.png')
     if error:
-        return {
-            'error': error
-        }
+        raise ValueError(error)
     # Generate S3 presigned URL
-    url = gen_presigned_url(user, pos)
+    url = gen_presigned_url(username, pos)
     if not url:
         raise ValueError('Unable to generate presigned URL for uploaded image')
-    # Update URL in PG
-    _, error = update_image(user, pos, url)
+    # Update URL in DB
+    _, error = update_image(username, pos, url)
     if error:
         raise ValueError(error)
     return {
-        'status': f'Successfully uploaded image for {user}'
+        'uploaded': True
     }
 
 
 def me(**kwargs):
     '''
     Retrieves S3 presigned URLs from DB and generates new ones if they are
-    within an hour of expiration.
+    within an hour of expiration. Also saves the new URLs in the database.
     '''
     username = kwargs['username']
+    # Get current user information and current URLs
     user = get_user(username)
-    links = [user['one'], user['two'], user['three']]
-    # print(links)
-    updated_links = list(links)
     filenames = ['one', 'two', 'three']
+    links = [user[filename] for filename in filenames]
+    updated_links = list(links)
     for idx, link in enumerate(links):
-        updated_links[idx] = refresh_url(username, filenames[idx], link)
+        # Generate new URL if required
+        updated, link = refresh_url(username, filenames[idx], link)
+        if not updated:
+            continue
+        # Save URL in database
+        _, error = update_image(username, filenames[idx], link)
+        if error:
+            continue
+        updated_links[idx] = link
     return {
         'user': username,
         'imageUrls': updated_links,
@@ -124,8 +132,8 @@ def register(**kwargs):
         raise ValueError('User already exists')
     # Register user
     hashed_pw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
-    out, err = create_user(username, hashed_pw)
-    if err:
+    _, error = create_user(username, hashed_pw)
+    if error:
         raise ValueError('Error inserting user into DB')
     return {
         'registered': True
@@ -134,16 +142,14 @@ def register(**kwargs):
 
 def login(**kwargs):
     '''
-    Logs in a user and returns an authorization token.
+    Logs in a user and returns an access token.
     '''
     request = kwargs['request']
     # Get user information
     username = request.json.get('user')
     password = request.json.get('password')
     if not username or not password:
-        return {
-            'error': 'Missing username or password'
-        }
+        raise ValueError('Missing username or password')
     # Determine if user exists
     user_info = get_user(username)
     if not user_info:
@@ -151,18 +157,13 @@ def login(**kwargs):
     # Login user and generate auth token
     if bcrypt.checkpw(password.encode('utf8'), user_info['password'].encode('utf8')):
         return {
-            'success': True,
             'accessToken': TokenHandler.get_encoded_token(username, SECRET_KEY).decode('utf8')
         }
-    return {
-        'error': 'Unable to login'
-    }
+    raise ValueError('Incorrect credentials')
 
 
 def follow(**kwargs):
-    '''
-    The user follows the specified user in the request.
-    '''
+    '''The user follows the specified user in the request.'''
     username = kwargs['username']
     request = kwargs['request']
     return {
@@ -171,9 +172,7 @@ def follow(**kwargs):
 
 
 def unfollow(**kwargs):
-    '''
-    The user follows the specified user in the request.
-    '''
+    '''The user follows the specified user in the request.'''
     username = kwargs['username']
     request = kwargs['request']
     return {
@@ -182,34 +181,26 @@ def unfollow(**kwargs):
 
 
 def following(**kwargs):
-    '''
-    Retrieves all following of the given account (with S3 URLs).
-    '''
+    '''Retrieves all following of the given account (with S3 URLs).'''
     username = kwargs['username']
-    users = [me(username=user) for user in get_following(username)]
+    # return {
+    #     'following': [user for user in set(get_following(username))]
+    # }
+    users = [me(username=user) for user in set(get_following(username))]
     return {
         'following': users
     }
 
 
 def authenticated(**kwargs):
-    request = kwargs['request']
-    try:
-        token = request.headers.get('Authorization')
-        if not token or not TokenHandler.decode_token(token.replace('Bearer ', ''), SECRET_KEY):
-            return {
-                'authenticated': False
-            }
-        return {
-            'authenticated': True
-        }
-    except Exception as e:
-        return {
-            'error': str(e)
-        }
+    '''If the control flow even gets here then they are authenticated'''
+    return {
+        'authenticated': True
+    }
 
 
 def search(**kwargs):
+    '''Returns usernames in the DB similar to the passed in username'''
     username = kwargs['username']
     request = kwargs['request']
     to_search = request.args.get('user')
@@ -221,6 +212,7 @@ def search(**kwargs):
 
 
 def description(**kwargs):
+    '''Updates the description of a user in the DB'''
     username = kwargs['username']
     request = kwargs['request']
     description = request.json.get('description')

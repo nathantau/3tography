@@ -21,7 +21,7 @@ const Auth = {
                 }
             });
             res = await res.json();
-            if (res.success && res.accessToken) {
+            if (res.accessToken) {
                 localStorage.setItem('3tography-access-token', res.accessToken);
                 Auth.authenticated = true;
             }

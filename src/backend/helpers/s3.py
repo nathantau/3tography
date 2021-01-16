@@ -12,9 +12,7 @@ credentials = {}
 
 
 def assume_role():
-    '''
-    Assume the threetography role if access is expired.
-    '''
+    ''' Assume the threetography role if access is expired '''
     sts = boto3.client('sts')
     response = sts.get_caller_identity()
     if 'assumed-role' not in response.get('Arn'):
@@ -30,9 +28,7 @@ def assume_role():
 
 
 def gen_presigned_url(username, pos, exp=3600*8):
-    '''
-    Generates a presigned url allowing any individual to access the given link for 2 hours.
-    '''
+    ''' Generates a presigned url allowing any individual to access the given link for 8 hours by default '''
     assume_role()
     role_session = boto3.Session(
         aws_access_key_id=credentials.get('AccessKeyId'),
@@ -53,25 +49,20 @@ def gen_presigned_url(username, pos, exp=3600*8):
 
 
 def refresh_url(user, pos, link):
-    '''
-    Regenerates and returns an S3 presigned URL if it is within an hour of expiry.
-    '''
+    ''' Regenerates and returns an S3 presigned URL if it is within an hour of expiry '''
+    if not link:
+        return False, ''
     if '&Expires=' not in link:
-        return None
+        return False, ''
     unix_timestamp = int(link.split('&Expires=')[1])
     curr_timestamp = time.time()
-    print(unix_timestamp - curr_timestamp )
     if unix_timestamp - curr_timestamp < 3600:
-        return gen_presigned_url(user, pos, exp=3600*8)
-    return link
+        return True, gen_presigned_url(user, pos, exp=3600*8)
+    return False, link
 
 
-def upload_img(user, filename):
-    '''
-    Uploads a given image for a specified user in S3.
-    Returns:
-    (succeeded, error)
-    '''
+def upload_image(user, filename):
+    ''' Uploads a given image for a specified user in S3 '''
     assume_role()
     role_session = boto3.Session(
         aws_access_key_id=credentials.get('AccessKeyId'),
@@ -85,8 +76,4 @@ def upload_img(user, filename):
         return True, None
     except Exception as e:
         return False, 'Error uploading file to S3 for user {}: {}'.format(user, str(e))
-
-
-def delete_img(user, pos):
-    pass    
 
