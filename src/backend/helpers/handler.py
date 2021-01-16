@@ -92,7 +92,7 @@ def upload(**kwargs):
 def me(**kwargs):
     '''
     Retrieves S3 presigned URLs from DB and generates new ones if they are
-    within an hour of expiration. Also saves the new URLs in the database.
+    within an hour of expiration. Also saves the new URLs in the database
     '''
     username = kwargs['username']
     # Get current user information and current URLs
@@ -118,9 +118,7 @@ def me(**kwargs):
 
 
 def register(**kwargs):
-    '''
-    Creates a new user in the database.
-    '''
+    ''' Creates a new user in the database '''
     request = kwargs['request']
     # Get user information
     username = request.json.get('user')
@@ -141,9 +139,7 @@ def register(**kwargs):
 
 
 def login(**kwargs):
-    '''
-    Logs in a user and returns an access token.
-    '''
+    ''' Logs in a user and returns an access token '''
     request = kwargs['request']
     # Get user information
     username = request.json.get('user')
@@ -163,7 +159,7 @@ def login(**kwargs):
 
 
 def follow(**kwargs):
-    '''The user follows the specified user in the request.'''
+    ''' The user follows the specified user in the request '''
     username = kwargs['username']
     request = kwargs['request']
     return {
@@ -172,7 +168,7 @@ def follow(**kwargs):
 
 
 def unfollow(**kwargs):
-    '''The user follows the specified user in the request.'''
+    ''' The user follows the specified user in the request '''
     username = kwargs['username']
     request = kwargs['request']
     return {
@@ -181,7 +177,7 @@ def unfollow(**kwargs):
 
 
 def following(**kwargs):
-    '''Retrieves all following of the given account (with S3 URLs).'''
+    ''' Retrieves all following of the given account (with S3 URLs) '''
     username = kwargs['username']
     # return {
     #     'following': [user for user in set(get_following(username))]
@@ -193,14 +189,14 @@ def following(**kwargs):
 
 
 def authenticated(**kwargs):
-    '''If the control flow even gets here then they are authenticated'''
+    ''' If the control flow even gets here then they are authenticated '''
     return {
         'authenticated': True
     }
 
 
 def search(**kwargs):
-    '''Returns usernames in the DB similar to the passed in username'''
+    ''' Returns usernames in the DB similar to the passed in username '''
     username = kwargs['username']
     request = kwargs['request']
     to_search = request.args.get('user')
@@ -212,7 +208,7 @@ def search(**kwargs):
 
 
 def description(**kwargs):
-    '''Updates the description of a user in the DB'''
+    ''' Updates the description of a user in the DB '''
     username = kwargs['username']
     request = kwargs['request']
     description = request.json.get('description')
