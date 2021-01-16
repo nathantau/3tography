@@ -29,7 +29,7 @@ def assume_role():
         credentials = response.get('Credentials')
 
 
-def gen_presigned_url(user, pos, exp=3600*8):
+def gen_presigned_url(username, pos, exp=3600*8):
     '''
     Generates a presigned url allowing any individual to access the given link for 2 hours.
     '''
@@ -41,7 +41,7 @@ def gen_presigned_url(user, pos, exp=3600*8):
     )
     s3 = role_session.client('s3')
     try:
-        key = f'users/{user}/{pos}.png'
+        key = f'users/{username}/{pos}.png'
         url = s3.generate_presigned_url('get_object', 
             Params={'Bucket': BUCKET, 'Key': key},
             ExpiresIn=exp
@@ -60,7 +60,8 @@ def refresh_url(user, pos, link):
         return None
     unix_timestamp = int(link.split('&Expires=')[1])
     curr_timestamp = time.time()
-    if unix_timestamp - curr_timestamp < 3600*7:
+    print(unix_timestamp - curr_timestamp )
+    if unix_timestamp - curr_timestamp < 3600:
         return gen_presigned_url(user, pos, exp=3600*8)
     return link
 

@@ -4,7 +4,7 @@ import bcrypt
 
 
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow
+from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow, update_description
 from .s3 import upload_img, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
@@ -37,6 +37,7 @@ def flow(request, path):
         '/follow': follow,
         '/unfollow': unfollow,
         '/search': search,
+        '/description': description,
         '/authenticated': authenticated
     }
     if path not in path_to_handler:
@@ -93,15 +94,18 @@ def me(**kwargs):
     Retrieves S3 presigned URLs from DB and generates new ones if they are
     within an hour of expiration.
     '''
-    user = kwargs['username']
-    links = image_links(user)
+    username = kwargs['username']
+    user = get_user(username)
+    links = [user['one'], user['two'], user['three']]
+    # print(links)
     updated_links = list(links)
     filenames = ['one', 'two', 'three']
     for idx, link in enumerate(links):
-        updated_links[idx] = refresh_url(user, filenames[idx], link)
+        updated_links[idx] = refresh_url(username, filenames[idx], link)
     return {
-        'user': user,
-        'imageUrls': updated_links
+        'user': username,
+        'imageUrls': updated_links,
+        'description': user['description']
     }
 
 
@@ -214,3 +218,15 @@ def search(**kwargs):
     return {
         'results': get_similar_usernames(to_search)
     }
+
+
+def description(**kwargs):
+    username = kwargs['username']
+    request = kwargs['request']
+    description = request.json.get('description')
+    if description is None:
+        raise ValueError('No description specified')
+    return {
+        'updated': update_description(username, description)
+    }
+

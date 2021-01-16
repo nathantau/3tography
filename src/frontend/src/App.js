@@ -11,6 +11,7 @@ import Auth from './utils/auth';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
 import Search from './components/Search';
+import Settings from './components/Settings';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                 <Route path='/register' component={Register}></Route>
                 <Route path='/login' component={Login}></Route>
                 <Route path='/search' component={Search}></Route>
+                <Route path='/settings' component={Settings}></Route>
                 <Footer></Footer>
             </Router>
         </div>

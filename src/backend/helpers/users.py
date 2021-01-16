@@ -138,6 +138,12 @@ def get_similar_usernames(username):
     return similar_usernames
 
 
+def update_description(username, description):
+    success, err = update_user(username, 'description', description)
+    if err:
+        raise ValueError(err)
+    return True
+
 # def list_users():
 #     query_str = '''
 #         SELECT * FROM users

@@ -24,7 +24,7 @@
 # from helpers import pg
 
 
-from helpers import pg, users
+from helpers import pg, users, handler
 # print(users.test())
 # print(users.get_user('nate'))
 # users.set_follow('nate','test1')
@@ -42,22 +42,24 @@ cur, conn = pg.create_connection()
 
 # print(users.set_unfollow('nate', 'test'))
 
-user = users.get_user(username1)
+# user = users.get_user(username1)
 
-# user['following'].remove('a')
+# # user['following'].remove('a')
 
+# # cur.execute(
+# #     f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
+# #     (user['following'], )
+# # )
+
+# # conn.commit()
+
+
+# user['following'].remove('test3')
 # cur.execute(
 #     f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
 #     (user['following'], )
 # )
-
 # conn.commit()
+# pg.close_connection(cur, conn)
 
-
-user['following'].remove('test3')
-cur.execute(
-    f'UPDATE users SET following = %s WHERE username = \'{username1}\'',
-    (user['following'], )
-)
-conn.commit()
-pg.close_connection(cur, conn)
+handler.me(username='nate')

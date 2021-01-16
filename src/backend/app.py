@@ -67,5 +67,10 @@ def unfollow():
     return handler.handle(request, '/unfollow')
 
 
+@app.route('/description', methods=['POST', 'OPTIONS'])
+def description():
+    return handler.handle(request, '/description')
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', threaded=True)

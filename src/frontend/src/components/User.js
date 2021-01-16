@@ -5,20 +5,27 @@ import './styles/User.css'
 const User = () => {
 
     const [username, setUsername] = useState('');
+    const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState(['', '', '']);
 
     const fetchUser = async () => {
-        let userInfo = await fetch('http://localhost:5000/me', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`
+        try {
+            let userInfo = await fetch('http://localhost:5000/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`
+                }
+            });
+            userInfo = await userInfo.json();
+            if (userInfo) {
+                setUsername(userInfo.user);
+                setDescription(userInfo.description);
+                setImageUrls(userInfo.imageUrls);
             }
-        });
-        userInfo = await userInfo.json();
-        console.log(userInfo)
-        setUsername(userInfo.user);
-        setImageUrls(userInfo.imageUrls);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     useEffect(() => {
@@ -35,7 +42,7 @@ const User = () => {
                             <img id='profile' src={imageUrls[0]}/>
                         </div>
                         <h2>{username}</h2>
-                        <p>UW '25 Dreamer ; Traveller; Explorer</p>
+                        <p>{description}</p>
                     </div>
                     <div class='row'>
                         <div class='col-lg-4 col-sm-12'>

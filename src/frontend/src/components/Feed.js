@@ -34,7 +34,7 @@ const Feed = () => {
                             <img id='profile' src={user.imageUrls[0]}/>
                         </div>
                         <h2>{user.user}</h2>
-                        <p>UW '25 Dreamer ; Traveller; Explorer</p>
+                        {user.description ? <p>{user.description}</p> : null}
                         <div class='row' key={user.user}>
                             <div class='col-lg-4 col-sm-12'>
                                 <div className='feed-image-wrapper'>

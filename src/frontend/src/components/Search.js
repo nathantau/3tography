@@ -105,13 +105,13 @@ const Search = () => {
                                 if (followingList.has(candidate)) {
                                     return (
                                         <p key={candidate}>
-                                            <span style={{ fontWeight: 'bold' }}>{candidate}</span> <span style={{ color: 'green' }} onClick={() => unfollow(candidate)}>-following</span>
+                                            <span style={{ fontWeight: 'bold' }}>{candidate}</span> <span style={{ color: 'green', cursor: 'pointer' }} onClick={() => unfollow(candidate)}>-following</span>
                                         </p>
                                     )
                                 } else {
                                     return (
                                         <p key={candidate}>
-                                            <span style={{ fontWeight: 'bold' }}>{candidate}</span> <span style={{ color: 'blue' }} onClick={() => follow(candidate)}>+follow</span>
+                                            <span style={{ fontWeight: 'bold' }}>{candidate}</span> <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => follow(candidate)}>+follow</span>
                                         </p>
                                     )
                                 }
