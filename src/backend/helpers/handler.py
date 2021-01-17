@@ -151,6 +151,9 @@ def login(**kwargs):
     if not user_info:
         raise ValueError('User does not exist');
     # Login user and generate auth token
+    # return {
+    #     'sup':'world'
+    # }
     if bcrypt.checkpw(password.encode('utf8'), user_info['password'].encode('utf8')):
         return {
             'accessToken': TokenHandler.get_encoded_token(username, SECRET_KEY).decode('utf8')
