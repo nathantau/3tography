@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import './styles/Card.css';
 import Auth from '../utils/auth';
 import FeedUtils from '../utils/feed';
 
-const server = 'http://localhost:5000';
+const host = process.env.REACT_APP_FLASK_HOST;
 
 const Search = () => {
 
@@ -19,13 +19,12 @@ const Search = () => {
             if (!username) {
                 return;
             }
-            const res = await fetch(`${server}/search?user=${username}`, {
+            const res = await fetch(`${host}/api/search?user=${username}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`
                 }
             })
                 .then(res => res.json());
-            console.log(res);
             if (res.results) {
                 setCandidates(res.results);
             }
@@ -36,7 +35,7 @@ const Search = () => {
 
     const follow = async toFollow => {
         try {
-            const res = await fetch(`${server}/follow`, {
+            const res = await fetch(`${host}/api/follow`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
@@ -56,7 +55,7 @@ const Search = () => {
 
     const unfollow = async toUnfollow => {
         try {
-            const res = await fetch(`${server}/unfollow`, {
+            const res = await fetch(`${host}/api/unfollow`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
@@ -84,11 +83,10 @@ const Search = () => {
             const following = await FeedUtils.getFollowing();
             if (following) {
                 setFollowing(new Set(following.map(user => user.user)));
-                console.log(followingList)
             }
         }
         fetchData();
-    }, []);
+    }, [history]);
 
     return (
         <>

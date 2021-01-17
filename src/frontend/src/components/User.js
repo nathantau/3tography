@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Image from './Image';
 import './styles/User.css'
 
+const host = process.env.REACT_APP_FLASK_HOST;
+
 const User = () => {
 
     const [username, setUsername] = useState('');
@@ -10,7 +12,7 @@ const User = () => {
 
     const fetchUser = async () => {
         try {
-            let userInfo = await fetch('http://localhost:5000/me', {
+            let userInfo = await fetch(`${host}/api/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,22 +38,22 @@ const User = () => {
         <>
         {
             imageUrls && imageUrls.length === 3 ?
-                <div class='container'>
-                    <div class='heading'>
-                        <div class='profile-wrapper'>
+                <div className='container'>
+                    <div className='heading'>
+                        <div className='profile-wrapper'>
                             <img id='profile' src={imageUrls[0]}/>
                         </div>
                         <h2>{username}</h2>
                         <p>{description}</p>
                     </div>
-                    <div class='row'>
-                        <div class='col-lg-4 col-sm-12'>
+                    <div className='row'>
+                        <div className='col-lg-4 col-sm-12'>
                             <Image url={imageUrls[0]} pos='one' refresh={fetchUser}></Image>
                         </div>
-                        <div class='col-lg-4 col-sm-12'>
+                        <div className='col-lg-4 col-sm-12'>
                             <Image url={imageUrls[1]} pos='two' refresh={fetchUser}></Image>
                         </div>
-                        <div class='col-lg-4 col-sm-12'>
+                        <div className='col-lg-4 col-sm-12'>
                             <Image url={imageUrls[2]} pos='three' refresh={fetchUser}></Image>
                         </div>
                     </div>

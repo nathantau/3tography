@@ -1,4 +1,5 @@
-const host = 'http://localhost:5000';
+const host = process.env.REACT_APP_FLASK_HOST;
+
 const FeedUtils = {
     getFollowing: async () => {
         /**
@@ -9,7 +10,7 @@ const FeedUtils = {
          * }
          */
         try {
-            let res = await fetch(`${host}/following`, {
+            let res = await fetch(`${host}/api/following`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}` }
             });
             res = await res.json();

@@ -4,7 +4,7 @@ import bcrypt
 
 
 from .cors import modify_headers
-from .users import update_image, image_links, user_exists, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow, update_description
+from .users import update_image, create_user, get_user, get_following, set_follow, get_similar_usernames, set_unfollow, update_description
 from .s3 import upload_image, gen_presigned_url, refresh_url
 from .auth import TokenHandler
 
@@ -126,7 +126,7 @@ def register(**kwargs):
     if not username or not password:
         raise ValueError('Missing username or password')
     # Determine if user exists
-    if user_exists(username):
+    if get_user(username):
         raise ValueError('User already exists')
     # Register user
     hashed_pw = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
@@ -151,9 +151,6 @@ def login(**kwargs):
     if not user_info:
         raise ValueError('User does not exist');
     # Login user and generate auth token
-    # return {
-    #     'sup':'world'
-    # }
     if bcrypt.checkpw(password.encode('utf8'), user_info['password'].encode('utf8')):
         return {
             'accessToken': TokenHandler.get_encoded_token(username, SECRET_KEY).decode('utf8')

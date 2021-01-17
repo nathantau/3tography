@@ -4,7 +4,7 @@
 
 #### Authenticated
 
-`/authenticated`
+`/api/authenticated`
 
 Returns whether or not the current user's access token is valid and thus, whether the user is authenticated.
 
@@ -14,7 +14,7 @@ Authorization: Bearer {accessToken}
 
 #### Me
 
-`/me`
+`/api/me`
 
 Returns the user's information including username, profile description and image URLs.
 
@@ -24,7 +24,7 @@ Authorization: Bearer {accessToken}
 
 #### Following
 
-`/following`
+`/api/following`
 
 Returns the list of accounts that the user is following (their image URLs and usernames respectively).
 
@@ -34,7 +34,7 @@ Authorization: Bearer {accessToken}
 
 #### Search
 
-`/search?user={candidate}`
+`/api/search?user={candidate}`
 
 Returns a list of usernames that are similar to the candidate string.
 
@@ -46,7 +46,7 @@ Authorization: Bearer {accessToken}
 
 #### Register
 
-`/register`
+`/api/register`
 
 Registers a user in the database.
 
@@ -67,7 +67,7 @@ Content-type: application/json
 
 #### Login
 
-`/login`
+`/api/login`
 
 Logs a user in and returns an access token.
 
@@ -88,7 +88,7 @@ Content-type: application/json
 
 #### Follow
 
-`/follow`
+`/api/follow`
 
 Follows a user that is not currently being followed.
 
@@ -109,7 +109,7 @@ Content-type: application/json
 
 #### Unfollow
 
-`/unfollow`
+`/api/unfollow`
 
 Unfollows a user that is currently being followed.
 
@@ -130,7 +130,7 @@ Content-type: application/json
 
 #### Description
 
-`/description`
+`/api/description`
 
 Updates the user's profile description.
 
@@ -151,7 +151,7 @@ Content-type: application/json
 
 #### Upload
 
-`/upload`
+`/api/upload`
 
 Uploads an image to the user's personal repository.
 

@@ -1,4 +1,5 @@
-const host = 'http://localhost:5000';
+const host = process.env.REACT_APP_FLASK_HOST;
+
 const Auth = {
     authenticated: localStorage.getItem('3tography-access-token'),
     init: async () => {
@@ -10,7 +11,7 @@ const Auth = {
     },
     login: async (username, password) => {
         try {
-            let res = await fetch(`${host}/login`, {
+            let res = await fetch(`${host}/api/login`, {
                 method: 'POST',
                 body: JSON.stringify({
                     user: username,
@@ -27,7 +28,6 @@ const Auth = {
             }
         } catch (err) {
             console.error(err);
-            // Auth.logout();
         }
     },
     register: async (username, password) => {
@@ -35,7 +35,7 @@ const Auth = {
          * Returns 'true' if successfully registered, 'false' otherwise
          */
         try {
-            let res = await fetch(`${host}/register`, {
+            let res = await fetch(`${host}/api/register`, {
                 method: 'POST',
                 body: JSON.stringify({
                     user: username,
@@ -66,7 +66,7 @@ const Auth = {
                 return false;
             }
             let res = await fetch(
-                `${host}/authenticated`, {
+                `${host}/api/authenticated`, {
                     headers: {
                         Authorization: 'Bearer ' + token
                     }

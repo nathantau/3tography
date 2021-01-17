@@ -9,7 +9,7 @@ const Footer = () => {
     const history = useHistory();
 
     return (
-        <footer class='fixed-bottom' style={{ backgroundColor: 'black', color: 'white', padding: '1vh', fontFamily: 'Roboto', fontWeight: 400 }}>
+        <footer className='fixed-bottom' style={{ backgroundColor: 'black', color: 'white', padding: '1vh', fontFamily: 'Roboto', fontWeight: 400 }}>
             <div className='row'>
                 <div className='col-lg-1'></div>
                 <div className='col-lg-2'>

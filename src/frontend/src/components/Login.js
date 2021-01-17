@@ -3,8 +3,6 @@ import { useHistory, Link } from 'react-router-dom';
 import './styles/Card.css';
 import Auth from '../utils/auth';
 
-
-
 const Login = () => {
 
     const [credentials, setCredentials] = useState({});
@@ -32,7 +30,7 @@ const Login = () => {
             }
         }
         fetchData();
-    }, []);
+    }, [history]);
 
     return (
         <>

@@ -30,23 +30,23 @@ const Feed = () => {
             {following.map(user => {
                 return (
                     <div className='card feed-card' key={user.user}>
-                        <div class='feed-profile-wrapper'>
+                        <div className='feed-profile-wrapper'>
                             <img id='profile' src={user.imageUrls[0]}/>
                         </div>
                         <h2>{user.user}</h2>
                         {user.description ? <p>{user.description}</p> : null}
-                        <div class='row' key={user.user}>
-                            <div class='col-lg-4 col-sm-12'>
+                        <div className='row' key={user.user}>
+                            <div className='col-lg-4 col-sm-12'>
                                 <div className='feed-image-wrapper'>
                                     <img alt='image0' src={user.imageUrls[0]}></img>
                                 </div>
                             </div>
-                            <div class='col-lg-4 col-sm-12'>
+                            <div className='col-lg-4 col-sm-12'>
                                 <div className='feed-image-wrapper'>
                                     <img alt='image1' src={user.imageUrls[1]}></img>
                                 </div>                           
                             </div>
-                            <div class='col-lg-4 col-sm-12'>
+                            <div className='col-lg-4 col-sm-12'>
                                 <div className='feed-image-wrapper'>
                                     <img alt='image2' src={user.imageUrls[2]}></img>
                                 </div>

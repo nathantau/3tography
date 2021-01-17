@@ -15,7 +15,7 @@ const Me = () => {
             }
         }
         checkLoggedIn();
-    }, []);
+    }, [history]);
 
     return (
         <>

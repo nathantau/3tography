@@ -1,6 +1,6 @@
 # Threetography
 
-A minimalistic photo-sharing platform and potentially one of my dumbest ideas to date. But the tech stack is cool tho!
+A minimalistic photo-sharing platform and potentially one of my dumbest ideas to date. But the tech stack is cool tho so I don't really care lol.
 
 **Features**
 
@@ -38,8 +38,10 @@ Okay boys and girls this is how it works. When a user uploads their own images o
 
 To run, simply ensure you have `Docker` installed as well as have an `AWS` account. Then run the following:
 
+**Create AWS credentials file**
+
 ```sh
-# Create AWS credentials file
+# Create directory
 cd src/
 mkdir .aws
 cd .aws
@@ -49,12 +51,23 @@ cat > credentials
 [default]
 aws_access_key_id = {yourAWSKeyId}
 aws_secret_access_key = {yourAWSSecretKey}
-# ctrl+D to finish
+cd ..
+```
 
-# Start containers from root directory
-cd..
+**Launch containers**
+```sh
+# Start containers from root directory (src/)
 docker-compose up
 ```
+
+**Deploying**
+
+If this is deployed onto a cloud VM, be sure to modify `app.env` and change the values of `REACT_APP_FLASK_HOST` and `REACT_HOST` accordingly.
+
+- `REACT_APP_FLASK_HOST`: Host of backend, defaulted to `http://localhost:5000`
+- `REACT_HOST`: Host of frontend, defaulted to `http://localhost:3000`
+
+For local purposes, the above can be ignored (unless the ports configured in `docker-compose.yml` are modified).
 
 ### Reflections
 
@@ -68,7 +81,7 @@ I'm very happy to have used `Docker Compose` from the beginning for development 
 
 #### Authenticated
 
-`/authenticated`
+`/api/authenticated`
 
 Returns whether or not the current user's access token is valid and thus, whether the user is authenticated.
 
@@ -78,7 +91,7 @@ Authorization: Bearer {accessToken}
 
 #### Me
 
-`/me`
+`/api/me`
 
 Returns the user's information including username, profile description and image URLs.
 
@@ -88,7 +101,7 @@ Authorization: Bearer {accessToken}
 
 #### Following
 
-`/following`
+`/api/following`
 
 Returns the list of accounts that the user is following (their image URLs and usernames respectively).
 
@@ -98,7 +111,7 @@ Authorization: Bearer {accessToken}
 
 #### Search
 
-`/search?user={candidate}`
+`/api/search?user={candidate}`
 
 Returns a list of usernames that are similar to the candidate string.
 
@@ -110,7 +123,7 @@ Authorization: Bearer {accessToken}
 
 #### Register
 
-`/register`
+`/api/register`
 
 Registers a user in the database.
 
@@ -131,7 +144,7 @@ Content-type: application/json
 
 #### Login
 
-`/login`
+`/api/login`
 
 Logs a user in and returns an access token.
 
@@ -152,7 +165,7 @@ Content-type: application/json
 
 #### Follow
 
-`/follow`
+`/api/follow`
 
 Follows a user that is not currently being followed.
 
@@ -175,7 +188,7 @@ Content-type: application/json
 
 #### Unfollow
 
-`/unfollow`
+`/api/unfollow`
 
 Unfollows a user that is currently being followed.
 
@@ -198,7 +211,7 @@ Content-type: application/json
 
 #### Description
 
-`/description`
+`/api/description`
 
 Updates the user's profile description.
 
@@ -221,7 +234,7 @@ Content-type: application/json
 
 #### Upload
 
-`/upload`
+`/api/upload`
 
 Uploads an image to the user's personal repository.
 

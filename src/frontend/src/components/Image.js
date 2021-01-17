@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/Image.css'
 
+const host = process.env.REACT_APP_FLASK_HOST;
+
 const Image = ({ url, pos, refresh }) => {
     
     const input = useRef(null);
@@ -23,7 +25,7 @@ const Image = ({ url, pos, refresh }) => {
                 formData.append('File', file);
                 formData.append('pos', pos);
                 try {
-                    await fetch('http://localhost:5000/upload', {
+                    await fetch(`${host}/api/upload`, {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -46,7 +48,7 @@ const Image = ({ url, pos, refresh }) => {
 
     return (
         <>
-            <div class='image-wrapper' onClick={uploadImage}>
+            <div className='image-wrapper' onClick={uploadImage}>
                 <img alt={url} src={url}></img>
             </div>
             <form>

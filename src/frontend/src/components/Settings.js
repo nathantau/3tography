@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import './styles/Card.css';
 import Auth from '../utils/auth';
 
-const server = 'http://localhost:5000';
+const host = process.env.REACT_APP_FLASK_HOST;
 
 const Settings = () => {
 
@@ -13,7 +13,7 @@ const Settings = () => {
 
     const fetchUser = async () => {
         try {
-            let userInfo = await fetch('http://localhost:5000/me', {
+            let userInfo = await fetch(`${host}/api/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const Settings = () => {
             if (!candidate) {
                 return;
             }
-            const res = await fetch(`${server}/description`, {
+            const res = await fetch(`${host}/api/description`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('3tography-access-token')}`,
@@ -62,7 +62,7 @@ const Settings = () => {
             await fetchUser();
         }
         fetchData();
-    }, []);
+    }, [history]);
 
     return (
         <>

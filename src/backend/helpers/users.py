@@ -34,14 +34,10 @@ def image_links(username):
 
 
 def update_image(username, pos, url):
-    if not user_exists(username):
+    if not get_user(username):
         return False, 'User does not exist'
     success, err = update_user(username, pos, url)
     return success, err
-
-
-def user_exists(username):
-    return True if get_user(username) else False
 
 
 def create_user(username, password):
@@ -81,7 +77,7 @@ def set_follow(username1, username2):
     '''
     Makes user1 follow user2.
     '''
-    if not user_exists(username1) or not user_exists(username2):
+    if not get_user(username1) or not get_user(username2):
         raise ValueError('Specified user(s) do not exist')
     user = get_user(username=username1)
     if username2 in set(user['following']):
@@ -94,7 +90,7 @@ def set_follow(username1, username2):
 
 def set_unfollow(username1, username2):
     ''' Makes user1 unfollow user2 '''
-    if not user_exists(username1) or not user_exists(username2):
+    if not get_user(username1) or not get_user(username2):
         raise ValueError('Specified user(s) do not exist')
     user = get_user(username=username1)
     if username2 not in set(user['following']):
