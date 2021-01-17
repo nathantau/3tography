@@ -51,7 +51,8 @@ aws_access_key_id = {yourAWSKeyId}
 aws_secret_access_key = {yourAWSSecretKey}
 # ctrl+D to finish
 
-# Start containers
+# Start containers from root directory
+cd..
 docker-compose up
 ```
 
@@ -155,10 +156,12 @@ Content-type: application/json
 
 Follows a user that is not currently being followed.
 
-```json
+```
 Authorization: Bearer {accessToken}
 Content-type: application/json
+```
 
+```json
 // Sample Request
 {
     "user": {userToFollow}
@@ -176,10 +179,12 @@ Content-type: application/json
 
 Unfollows a user that is currently being followed.
 
-```json
+```
 Authorization: Bearer {accessToken}
 Content-type: application/json
+```
 
+```json
 // Sample Request
 {
     "user": {userToUnfollow}
@@ -197,10 +202,12 @@ Content-type: application/json
 
 Updates the user's profile description.
 
-```json
+```
 Authorization: Bearer {accessToken}
 Content-type: application/json
+```
 
+```json
 // Sample Request
 {
     "description": {newDescription}
@@ -218,12 +225,14 @@ Content-type: application/json
 
 Uploads an image to the user's personal repository.
 
-```json
+```
 Authorization: Bearer {accessToken}
+```
 
+```json
 // Sample Request (Form data)
 File: {file}
-Pos: {"one"/"two"/"three"}
+Pos: {"one/two/three"}
 
 // Sample Response
 {
