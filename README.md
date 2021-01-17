@@ -8,7 +8,7 @@ A minimalistic photo-sharing platform and potentially one of my dumbest ideas to
 - Upload your own 3 images
 - Change your profile description
 
-*What's so special about it?**
+**What's so special about it**
 
 I'm going to be reaching a little bit here but bear with me. The problem with Instagram is that there is no limit to the amount of media that users can upload. Thus, each profile becomes filled with useless clutter. However, imagine being forced to express yourself with only 3 images - how much more special and significant would each of these uploads be?
 
