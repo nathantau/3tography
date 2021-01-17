@@ -9,7 +9,7 @@ def get_user(username):
     close_connection(cur, conn)
     if not info:
         return None
-    fields = ['username', 'password', 'followers', 'following', 'one', 'two', 'three', 'profile', 'description']
+    fields = ['username', 'password', 'following', 'one', 'two', 'three', 'description']
     return {
         fields[idx]: info[idx] for idx in range(len(fields))
     }
@@ -44,8 +44,8 @@ def create_user(username, password):
     try:
         cur, conn = create_connection()
         cur.execute(
-            'INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            (username, password, [], [], '', '', '', '', '')
+            'INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (username, password, [], '', '', '', '')
         )
         conn.commit()
         close_connection(cur, conn)
@@ -124,21 +124,3 @@ def update_description(username, description):
         raise ValueError(error)
     return True
 
-
-# LEGACY
-# def create_users_table():
-#     query_str = '''
-#         CREATE TABLE users (
-#             username text PRIMARY KEY,
-#             password text,
-#             followers text[],
-#             following text[],
-#             one text,
-#             two text,
-#             three text,
-#             profile_pic text,
-#             description text
-#         );
-#     '''
-#     out, err = query(query_str)
-#     return out, err

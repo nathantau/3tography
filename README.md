@@ -62,6 +62,14 @@ cd ..
 docker-compose up
 ```
 
+**Initialize table**
+```sh
+# Run Postgres table initialization in container
+dc exec backend psql -f utils/init_table.sql
+```
+
+Hence, the 3 containers should be up and running!
+
 **Deploying**
 
 If this is deployed onto a cloud VM, be sure to modify `app.env` and change the values of `REACT_APP_FLASK_HOST` and `REACT_HOST` accordingly.
