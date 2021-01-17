@@ -23,7 +23,7 @@ services:
       - ./app.env
     volumes:
       - ./src/backend:/home/backend
-      - ./src/.aws/credentials:/root/.aws/credentials
+      - ./src/.aws:/root/.aws
     links:
       - db
     restart: always
