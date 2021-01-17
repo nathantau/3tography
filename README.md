@@ -1,3 +1,5 @@
+[![Website](https://img.shields.io/website?up_message=http%3A%2F%2F3tography.nathanau.ca%2F&url=http%3A%2F%2F3tography.nathanau.ca%2F)](http://3tography.nathanau.ca)
+
 # Threetography
 
 A minimalistic photo-sharing platform and potentially one of my dumbest ideas to date. But the tech stack is cool tho so I don't really care lol.
