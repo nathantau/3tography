@@ -179,9 +179,6 @@ def unfollow(**kwargs):
 def following(**kwargs):
     ''' Retrieves all following of the given account (with S3 URLs) '''
     username = kwargs['username']
-    # return {
-    #     'following': [user for user in set(get_following(username))]
-    # }
     users = [me(username=user) for user in set(get_following(username))]
     return {
         'following': users
